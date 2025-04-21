@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
 export default function PizzaForm() {
   const [formData, setFormData] = useState({
@@ -12,6 +13,16 @@ export default function PizzaForm() {
       tomato: false
     }
   });
+
+  const [errors, setErrors] = useState('');
+
+  useEffect(() => {
+    if (formData.name.trim().length < 2) {
+      setErrors('İsim en az 2 karakter olmalıdır');
+    } else {
+      setErrors('');
+    }
+  }, [formData.name]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -32,8 +43,31 @@ export default function PizzaForm() {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  
+    const payload = {
+      isim: formData.name,
+      boyut: formData.size,
+      malzeme1: formData.toppings.pepperoni,
+      malzeme2: formData.toppings.mushroom,
+      malzeme3: formData.toppings.cheese,
+      malzeme4: formData.toppings.tomato,
+      özel: formData.special
+    };
+  
+    axios
+      .post('https://reqres.in/api/orders', payload)
+      .then((response) => {
+        console.log('Sipariş başarıyla gönderildi:', response.data);
+      })
+      .catch((error) => {
+        console.error('Sipariş gönderilirken hata oluştu:', error);
+      });
+  };  
+
   return (
-    <form id="pizza-form">
+    <form id="pizza-form" onSubmit={handleSubmit}>
       <h2>Pizza Siparişi</h2>
 
       <label>
@@ -46,6 +80,7 @@ export default function PizzaForm() {
           onChange={handleChange}
         />
       </label>
+      {errors && <p className="error">{errors}</p>}
 
       <label>
         Boyut Seçin:
@@ -64,42 +99,17 @@ export default function PizzaForm() {
 
       <fieldset>
         <legend>Malzemeler:</legend>
-        <label>
-          <input
-            type="checkbox"
-            name="pepperoni"
-            checked={formData.toppings.pepperoni}
-            onChange={handleChange}
-          />
-          Pepperoni
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            name="mushroom"
-            checked={formData.toppings.mushroom}
-            onChange={handleChange}
-          />
-          Mantar
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            name="cheese"
-            checked={formData.toppings.cheese}
-            onChange={handleChange}
-          />
-          Ekstra Peynir
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            name="tomato"
-            checked={formData.toppings.tomato}
-            onChange={handleChange}
-          />
-          Domates
-        </label>
+        {['pepperoni', 'mushroom', 'cheese', 'tomato'].map((malzeme) => (
+          <label key={malzeme}>
+            <input
+              type="checkbox"
+              name={malzeme}
+              checked={formData.toppings[malzeme]}
+              onChange={handleChange}
+            />
+            {malzeme}
+          </label>
+        ))}
       </fieldset>
 
       <label>
