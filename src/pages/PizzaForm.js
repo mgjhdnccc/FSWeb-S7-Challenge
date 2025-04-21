@@ -1,5 +1,6 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function PizzaForm() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ export default function PizzaForm() {
   });
 
   const [errors, setErrors] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (formData.name.trim().length < 2) {
@@ -45,7 +47,7 @@ export default function PizzaForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     const payload = {
       isim: formData.name,
       boyut: formData.size,
@@ -55,16 +57,17 @@ export default function PizzaForm() {
       malzeme4: formData.toppings.tomato,
       özel: formData.special
     };
-  
+
     axios
       .post('https://reqres.in/api/orders', payload)
-      .then((response) => {
-        console.log('Sipariş başarıyla gönderildi:', response.data);
+      .then((res) => {
+        console.log('Sipariş başarıyla gönderildi:', res.data);
+        navigate('/success', { state: payload });
       })
-      .catch((error) => {
-        console.error('Sipariş gönderilirken hata oluştu:', error);
+      .catch((err) => {
+        console.error('Hata:', err);
       });
-  };  
+  };
 
   return (
     <form id="pizza-form" onSubmit={handleSubmit}>
