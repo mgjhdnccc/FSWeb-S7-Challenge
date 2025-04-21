@@ -1,11 +1,18 @@
-import React from "react";
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+import PizzaForm from './pages/PizzaForm';
 
-const App = () => {
+function App() {
   return (
-    <>
-      <h1>Teknolojik Yemekler</h1>
-      <p>Burdaki kodu silip kendi headerınızı ekleyebilirsiniz</p>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/pizza" element={<PizzaForm />} />
+      </Routes>
+    </Router>
   );
-};
+}
+
 export default App;
+
