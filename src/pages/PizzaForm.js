@@ -11,8 +11,8 @@ export default function PizzaForm() {
       pepperoni: false,
       mushroom: false,
       cheese: false,
-      tomato: false
-    }
+      tomato: false,
+    },
   });
 
   const [errors, setErrors] = useState('');
@@ -28,19 +28,19 @@ export default function PizzaForm() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
+    
     if (type === 'checkbox') {
       setFormData({
         ...formData,
         toppings: {
           ...formData.toppings,
-          [name]: checked
-        }
+          [name]: checked,
+        },
       });
     } else {
       setFormData({
         ...formData,
-        [name]: value
+        [name]: value,
       });
     }
   };
@@ -55,7 +55,7 @@ export default function PizzaForm() {
       malzeme2: formData.toppings.mushroom,
       malzeme3: formData.toppings.cheese,
       malzeme4: formData.toppings.tomato,
-      özel: formData.special
+      özel: formData.special,
     };
 
     axios
